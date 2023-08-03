@@ -107,7 +107,11 @@ func APICommentPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var resp JSONResponse
-	resp.Fields["id"] = string(id)
+	// if the struct have not initialized the inner map, it will get the "assignment to entry in nil map" error.
+	resp.Fields = make(map[string]string)
+	// use string() will get the ascii, not number string.
+    	resp.Fields["id"] = strconv.FormatInt(id, 10)
+	// resp.Fields["id"] = string(id)
 	resp.Fields["added"] = commentAdded
 	jsonResp, _ := json.Marshal(resp)
 	w.Header().Set("Content-Type", "application/json")
